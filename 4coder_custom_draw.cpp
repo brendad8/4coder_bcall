@@ -10,7 +10,8 @@ custom_draw_filebar(Application_Links *app, View_ID view_id, Buffer_ID buffer, F
   f32 char_wid = get_face_metrics(app, face_id).normal_advance;
   Rect_f32 title_rect = bar;
   title_rect.x1 = bar.x0 + char_wid*unique_name.size;
-  draw_rectangle_fcolor(app, title_rect, 0.f, fcolor_id(defcolor_vim_filebar_pop));
+  // draw_rectangle_fcolor(app, title_rect, 0.f, fcolor_id(defcolor_vim_filebar_pop));
+  draw_rectangle_fcolor(app, title_rect, 0.f, fcolor_id(defcolor_bar));
 
   // Rect_f32 triangle_rect = title_rect;
   // f32 radius_fudge = 5.f;
@@ -38,6 +39,7 @@ custom_draw_filebar(Application_Links *app, View_ID view_id, Buffer_ID buffer, F
 
   Vec2_f32 p = V2f32(title_rect.x1 + 4.5f*char_wid, bar.y0 + 3.f);
   p = draw_string(app, face_id, str.string, p, base_color);
+  // p = draw_string(app, global_fonts.bold, str.string, p, base_color);
 
   str = Su8(space, 0, 5);
   Dirty_State dirty = buffer_get_dirty_state(app, buffer);
@@ -54,6 +56,7 @@ custom_draw_filebar(Application_Links *app, View_ID view_id, Buffer_ID buffer, F
 
   p.x = bar.x0 + 2.f;
   draw_string(app, face_id, unique_name, p, base_color);
+  // draw_string(app, global_fonts.bold, unique_name, p, base_color);
 
   // TODO: vim_state.mode             == VIM_Visual "Selection: %d lines, %d chars"
   // TODO: vim_state.params.edit_type == EDIT_Block "Selection: %d x %d block, %d chars"

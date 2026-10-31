@@ -1,14 +1,14 @@
 
 #include "4coder_default_include.cpp"
 
-#include "4coder_custom_commands.cpp"
-
 #include "4coder_vim/4coder_vimrc.h"
 #include "4coder_vim/4coder_vim_include.h"
 #include "4coder_vim/4coder_vim_include.cpp"
 
-#include "4coder_custom_draw.cpp"
 #include "4coder_custom_bindings.cpp"
+#include "4coder_custom_commands.cpp"
+#include "4coder_custom_draw.cpp"
+#include "4coder_custom_fonts.cpp"
 
 #if !defined(META_PASS)
 #include "generated/managed_id_metadata.cpp"
@@ -356,11 +356,13 @@ VIM_REQUEST_SIG(EXAMPLE_apply_rot13){
 VIM_COMMAND_SIG(EXAMPLE_request_title){ EXAMPLE_make_vim_request(app, EXAMPLE_REQUEST_Title); }
 VIM_COMMAND_SIG(EXAMPLE_request_rot13){ EXAMPLE_make_vim_request(app, EXAMPLE_REQUEST_Rot13); }
 
-
 void 
 custom_layer_init(Application_Links *app)
 {
   default_framework_init(app);
+  
+  // custom_init_fonts(app);
+
   set_all_default_hooks(app);
 
   vim_request_vtable[VIM_REQUEST_COUNT + EXAMPLE_REQUEST_Title] = EXAMPLE_apply_title;

@@ -123,8 +123,8 @@ function void setup_custom_bindings(Application_Links *app)
   VimBind(N|V|MAP, vim_clear_search,          SUB_Leader,    KeyCode_Space);
   VimBind(N|V|MAP, vim_start_search_forward,                 KeyCode_ForwardSlash);
   VimBind(N|V|MAP, vim_start_search_backward,                KeyMod_Sft|KeyCode_ForwardSlash);
-  VimBind(N|V|MAP, vim_to_next_pattern,                      KeyCode_N);
-  VimBind(N|V|MAP, vim_to_prev_pattern,                      KeyMod_Sft|KeyCode_N);
+  // VimBind(N|V|MAP, vim_to_next_pattern,                      KeyCode_N);
+  // VimBind(N|V|MAP, vim_to_prev_pattern,                      KeyMod_Sft|KeyCode_N);
   VimBind(N|MAP, vim_in_next_pattern,        SUB_G,          KeyCode_N);
   VimBind(N|MAP, vim_in_prev_pattern,        SUB_G,          KeyMod_Sft|KeyCode_N);
 
@@ -159,8 +159,9 @@ function void setup_custom_bindings(Application_Links *app)
   VimBind(N|MAP, vim_interactive_open_or_new,  SUB_Leader,   KeyCode_E);
   VimBind(N|MAP, quick_swap_buffer,            SUB_RBracket, KeyCode_B);
 
-  VimBind(N|MAP, qol_jump_to_definition,                     KeyMod_Sft|KeyCode_K);
-  VimBind(N|MAP, vim_goto_definition,                        KeyMod_Alt|KeyCode_K);
+  VimBind(N|MAP, custom_jump_to_definition,                  KeyMod_Sft|KeyCode_K);
+  // VimBind(N|MAP, qol_jump_to_definition,                     KeyMod_Sft|KeyCode_K);
+  // VimBind(N|MAP, vim_goto_definition,                        KeyMod_Alt|KeyCode_K);
 
   VimBind(N|MAP, vim_next_4coder_jump,                       KeyCode_N);
   VimBind(N|MAP, vim_prev_4coder_jump,                       KeyMod_Sft|KeyCode_N);
@@ -175,6 +176,9 @@ function void setup_custom_bindings(Application_Links *app)
   VimBind(V|MAP, vim_uppercase,                              KeyMod_Sft|KeyCode_U);
   
   VimBind(I|MAP, word_complete_drop_down,                    KeyCode_Tab);
+  
+  VimBind(N|V|MAP, search_next,                              KeyCode_N);
+  VimBind(N|V|MAP, search_prev,                              KeyMod_Sft|KeyCode_N);
 
   // Window Binds
   VimBind(N|MAP, vim_change_x0, KeyMod_Ctl|KeyCode_H);

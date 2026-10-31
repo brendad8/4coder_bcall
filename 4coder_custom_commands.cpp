@@ -4,7 +4,7 @@ template <class F> struct defer_t{ F f; ~defer_t(){ f(); } };
 template <class F> defer_t<F> operator^(defer__t _, F f){ return {f}; }
 #define defer  auto glue(_defer_obj_, __LINE__)  =  defer__t{} ^ [&]()
 
-CUSTOM_COMMAND_SIG(qol_jump_to_definition)
+CUSTOM_COMMAND_SIG(custom_jump_to_definition)
 CUSTOM_DOC("Jump to the definition in the code index matching an identifier at the cursor")
 {
   View_ID view = get_active_view(app, Access_Visible);
@@ -37,4 +37,13 @@ CUSTOM_DOC("Jump to the definition in the code index matching an identifier at t
     return;
   }
 }
+
+CUSTOM_COMMAND_SIG(noh)
+CUSTOM_DOC("Vim: Clear search") { vim_clear_search(app); }
+
+CUSTOM_COMMAND_SIG(search_next)
+CUSTOM_DOC("Vim: Goto next search entry") { vim_to_pattern_inner(app, 0); }
+
+CUSTOM_COMMAND_SIG(search_prev)
+CUSTOM_DOC("Vim: Goto prev search entry") { vim_to_pattern_inner(app, BufferSeekString_Backward); }
 
