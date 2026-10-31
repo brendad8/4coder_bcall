@@ -7,6 +7,7 @@
 #include "4coder_vim/4coder_vim_include.h"
 #include "4coder_vim/4coder_vim_include.cpp"
 
+#include "4coder_custom_draw.cpp"
 #include "4coder_custom_bindings.cpp"
 
 #if !defined(META_PASS)
@@ -14,7 +15,8 @@
 #endif
 
 function void
-EXAMPLE_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id, Buffer_ID buffer, Text_Layout_ID text_layout_id, Rect_f32 rect){
+custom_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id, Buffer_ID buffer, Text_Layout_ID text_layout_id, Rect_f32 rect)
+{
   ProfileScope(app, "render buffer");
   View_ID active_view = get_active_view(app, Access_Always);
   b32 is_active_view = (active_view == view_id);
@@ -28,12 +30,16 @@ EXAMPLE_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id, 
   f32 mark_thickness = (f32)def_get_config_u64(app, vars_save_string_lit("mark_thickness"));
 
   Token_Array token_array = get_token_array_from_buffer(app, buffer);
-  if(token_array.tokens == 0){
+  if (token_array.tokens == 0)
+  {
     paint_text_color_fcolor(app, text_layout_id, visible_range, fcolor_id(defcolor_text_default));
-  }else{
+  }
+  else
+  {
     draw_cpp_token_colors(app, text_layout_id, &token_array);
     b32 use_comment_keyword = def_get_config_b32(vars_save_string_lit("use_comment_keyword"));
-    if(use_comment_keyword){
+    if (use_comment_keyword)
+    {
       Comment_Highlight_Pair pairs[] = {
         {string_u8_litexpr("NOTE"), finalize_color(defcolor_comment_pop, 0)},
         {string_u8_litexpr("TODO"), finalize_color(defcolor_comment_pop, 1)},
@@ -42,60 +48,90 @@ EXAMPLE_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id, 
     }
   }
 
+  // Highlight_Pair keyword_pairs[] = {
+  //     string_u8_litexpr( "global" ), finalize_color( defcolor_keyword, 0 ), 
+  //     string_u8_litexpr( "internal" ), finalize_color( defcolor_keyword, 0 ),
+  //     string_u8_litexpr( "local_persist" ), finalize_color( defcolor_keyword, 0 ),
+  //     string_u8_litexpr( "u8" ), finalize_color( defcolor_keyword, 0 ),
+  //     string_u8_litexpr( "u16" ), finalize_color( defcolor_keyword, 0 ),
+  //     string_u8_litexpr( "u32" ), finalize_color( defcolor_keyword, 0 ),
+  //     string_u8_litexpr( "u64" ), finalize_color( defcolor_keyword, 0 ),
+  //     string_u8_litexpr( "i8" ), finalize_color( defcolor_keyword, 0 ), 
+  //     string_u8_litexpr( "i16" ), finalize_color( defcolor_keyword, 0 ),
+  //     string_u8_litexpr( "i32" ), finalize_color( defcolor_keyword, 0 ),
+  //     string_u8_litexpr( "i64" ), finalize_color( defcolor_keyword, 0 ),
+  //     string_u8_litexpr( "f32" ), finalize_color( defcolor_keyword, 0 ),
+  //     string_u8_litexpr( "f64" ), finalize_color( defcolor_keyword, 0 )
+  // };
+  // draw_keyword_highlights( app, buffer, text_layout_id, &token_array, keyword_pairs, ArrayCount( keyword_pairs ) );
+
   i64 cursor_pos = view_correct_cursor(app, view_id);
   view_correct_mark(app, view_id);
 
   b32 highlight_line_at_cursor = def_get_config_b32(vars_save_string_lit("highlight_line_at_cursor"));
-  if(highlight_line_at_cursor && is_active_view){
+  if (highlight_line_at_cursor && is_active_view)
+  {
     i64 line_number = get_line_number_from_pos(app, buffer, cursor_pos);
     draw_line_highlight(app, text_layout_id, line_number, fcolor_id(defcolor_highlight_cursor_line));
   }
 
   b32 use_scope_highlight = def_get_config_b32(vars_save_string_lit("use_scope_highlight"));
-  if(use_scope_highlight){
+  if (use_scope_highlight)
+  {
     Color_Array colors = finalize_color_array(defcolor_back_cycle);
     draw_scope_highlight(app, buffer, text_layout_id, cursor_pos, colors.vals, colors.count);
   }
 
   b32 use_error_highlight = def_get_config_b32(vars_save_string_lit("use_error_highlight"));
   b32 use_jump_highlight  = def_get_config_b32(vars_save_string_lit("use_jump_highlight"));
-  if(use_error_highlight || use_jump_highlight){
+  if(use_error_highlight || use_jump_highlight)
+  {
     Buffer_ID comp_buffer = get_buffer_by_name(app, string_u8_litexpr("*compilation*"), Access_Always);
-    if(use_error_highlight){
+    if(use_error_highlight)
+    {
       draw_jump_highlights(app, buffer, text_layout_id, comp_buffer, fcolor_id(defcolor_highlight_junk));
     }
 
-    if(use_jump_highlight){
+    if(use_jump_highlight)
+    {
       Buffer_ID jump_buffer = get_locked_jump_buffer(app);
-      if(jump_buffer != comp_buffer){
+      if(jump_buffer != comp_buffer)
+      {
         draw_jump_highlights(app, buffer, text_layout_id, jump_buffer, fcolor_id(defcolor_highlight_white));
       }
     }
   }
 
   b32 use_paren_helper = def_get_config_b32(vars_save_string_lit("use_paren_helper"));
-  if(use_paren_helper){
+  if(use_paren_helper)
+  {
     Color_Array colors = finalize_color_array(defcolor_text_cycle);
     draw_paren_highlight(app, buffer, text_layout_id, cursor_pos, colors.vals, colors.count);
   }
 
   b64 show_whitespace = false;
   view_get_setting(app, view_id, ViewSetting_ShowWhitespace, &show_whitespace);
-  if(show_whitespace){
-    if(token_array.tokens == 0){
+  if (show_whitespace)
+  {
+    if (token_array.tokens == 0)
+    {
       draw_whitespace_highlight(app, buffer, text_layout_id, cursor_roundness);
-    }else{
+    }
+    else
+    {
       draw_whitespace_highlight(app, text_layout_id, &token_array, cursor_roundness);
     }
   }
 
-  if(is_active_view && vim_state.mode == VIM_Visual){
+  if (is_active_view && vim_state.mode == VIM_Visual)
+  {
     vim_draw_visual_mode(app, view_id, buffer, face_id, text_layout_id);
   }
 
   vim_draw_search_highlight(app, view_id, buffer, text_layout_id, cursor_roundness);
 
-  switch(fcoder_mode){
+  switch (fcoder_mode)
+  {
     case FCoderMode_Original:
     vim_draw_cursor(app, view_id, is_active_view, buffer, text_layout_id, cursor_roundness, mark_thickness); break;
     case FCoderMode_NotepadLike:
@@ -113,7 +149,7 @@ EXAMPLE_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id, 
 
 
 function void
-EXAMPLE_render_caller(Application_Links *app, Frame_Info frame_info, View_ID view_id){
+custom_render_caller(Application_Links *app, Frame_Info frame_info, View_ID view_id){
   Buffer_ID buffer = view_get_buffer(app, view_id, Access_Always);
   Face_ID face_id = get_face_id(app, 0);
   Face_Metrics face_metrics = get_face_metrics(app, face_id);
@@ -131,10 +167,25 @@ EXAMPLE_render_caller(Application_Links *app, Frame_Info frame_info, View_ID vie
 
   region = vim_draw_query_bars(app, region, view_id, face_id);
 
+  // Font_Load_Location secondary_font_location = {};
+  // secondary_font_location.file_name = string_u8_litexpr("C:\\Users\\guppy\\4cc\\build\\fonts\\CascadiaMono-Bold.ttf");
+  //
+  // Face_Description secondary_face_desc = {};
+  // secondary_face_desc.font = secondary_font_location;
+  // secondary_face_desc.parameters.pt_size = 16;
+  // secondary_face_desc.parameters.hinting = false;
+  //
+  // Face_ID secondary_face_id = face_id_from_description(app, &secondary_face_desc);
+  // if (secondary_face_id == 0)
+  // {
+  //     secondary_face_id = try_create_new_face(app, &secondary_face_desc);
+  // }
+
   {
     Rect_f32_Pair pair = layout_file_bar_on_bot(region, line_height);
     pair.b = rect_split_top_bottom(pair.b, line_height).a;
-    vim_draw_filebar(app, view_id, buffer, frame_info, face_id, pair.b);
+    // vim_draw_filebar(app, view_id, buffer, frame_info, face_id, pair.b);
+    custom_draw_filebar(app, view_id, buffer, frame_info, face_id, pair.b);
     region = pair.a;
   }
 
@@ -185,14 +236,14 @@ EXAMPLE_render_caller(Application_Links *app, Frame_Info frame_info, View_ID vie
       vim_draw_line_number_margin(app, view_id, buffer, face_id, text_layout_id, line_number_rect);
   }
 
-  EXAMPLE_render_buffer(app, view_id, face_id, buffer, text_layout_id, region);
+  custom_render_buffer(app, view_id, face_id, buffer, text_layout_id, region);
 
   text_layout_free(app, text_layout_id);
   draw_set_clip(app, prev_clip);
 }
 
 function Rect_f32
-EXAMPLE_buffer_region(Application_Links *app, View_ID view_id, Rect_f32 region){
+custom_buffer_region(Application_Links *app, View_ID view_id, Rect_f32 region){
 
   Buffer_ID buffer = view_get_buffer(app, view_id, Access_Always);
   Face_ID face_id = get_face_id(app, buffer);
@@ -306,8 +357,9 @@ VIM_COMMAND_SIG(EXAMPLE_request_title){ EXAMPLE_make_vim_request(app, EXAMPLE_RE
 VIM_COMMAND_SIG(EXAMPLE_request_rot13){ EXAMPLE_make_vim_request(app, EXAMPLE_REQUEST_Rot13); }
 
 
-void
-custom_layer_init(Application_Links *app){
+void 
+custom_layer_init(Application_Links *app)
+{
   default_framework_init(app);
   set_all_default_hooks(app);
 
@@ -319,8 +371,8 @@ custom_layer_init(Application_Links *app){
 
   set_custom_hook(app, HookID_ViewEventHandler, vim_view_input_handler);
 
-  set_custom_hook(app, HookID_BufferRegion, EXAMPLE_buffer_region);
-  set_custom_hook(app, HookID_RenderCaller, EXAMPLE_render_caller);
+  set_custom_hook(app, HookID_BufferRegion, custom_buffer_region);
+  set_custom_hook(app, HookID_RenderCaller, custom_render_caller);
   set_custom_hook(app, HookID_WholeScreenRenderCaller, vim_draw_whole_screen);
 
   set_custom_hook(app, HookID_Tick, vim_tick);
@@ -340,18 +392,6 @@ custom_layer_init(Application_Links *app){
   setup_default_mapping(&framework_mapping, global_map_id, file_map_id, code_map_id);
 #endif
 
-  vim_default_bindings(app, KeyCode_BackwardSlash);
-  {
-    u32 Sft = KeyMod_Sft;
-#define I bit_1
-#define N bit_2
-#define MAP 0
-    VimBind(I|N|MAP, EXAMPLE_request_title, SUB_Leader, (Sft|KeyCode_U));
-    VimBind(I|N|MAP, EXAMPLE_request_rot13, SUB_G,      (Sft|KeyCode_ForwardSlash));
-#undef I
-#undef N
-#undef MAP
+  setup_custom_bindings(app);
 
-  custom_bindings(app);
-  }
 }
