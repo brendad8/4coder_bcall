@@ -11,7 +11,8 @@ custom_tick(Application_Links *app, Frame_Info frame_info)
   // F4_PowerMode_Tick(app, frame_info);
   // F4_UpdateFlashes(app, frame_info);
   
-  code_index_update_tick(app);
+  // code_index_update_tick(app);
+  
   if(tick_all_fade_ranges(app, frame_info.animation_dt)){
     animate_in_n_milliseconds(app, 0);
   }
