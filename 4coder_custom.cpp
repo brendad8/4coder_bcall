@@ -1,14 +1,29 @@
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+
+#pragma warning(disable: 4042)
+#pragma warning(disable: 4067)
+
+#include <Windows.h>
+#include <Ole2.h>
+#include <oaidl.h>
+#endif
+
 #include "4coder_default_include.cpp"
 
 #include "4coder_vim/4coder_vimrc.h"
 #include "4coder_vim/4coder_vim_include.h"
 #include "4coder_vim/4coder_vim_include.cpp"
 
+#include "4coder_fleury/4coder_fleury_include.cpp"
+
 #include "4coder_custom_bindings.cpp"
 #include "4coder_custom_commands.cpp"
 #include "4coder_custom_draw.cpp"
 #include "4coder_custom_fonts.cpp"
+#include "4coder_custom_hooks.cpp"
 
 #if !defined(META_PASS)
 #include "generated/managed_id_metadata.cpp"
@@ -361,6 +376,51 @@ custom_layer_init(Application_Links *app)
 {
   default_framework_init(app);
   
+  // *********************************************************************
+  //  4coder_fleury setup
+  // *********************************************************************
+  
+  {
+    global_frame_arena = make_arena(get_base_allocator_system());
+    permanent_arena = make_arena(get_base_allocator_system());
+
+  //   // NOTE(rjf): Set up hooks.
+  //   {
+  //       set_all_default_hooks(app);
+  //       set_custom_hook(app, HookID_Tick,                    F4_Tick);
+  //       set_custom_hook(app, HookID_RenderCaller,            F4_Render);
+  //       set_custom_hook(app, HookID_BeginBuffer,             F4_BeginBuffer);
+  //       set_custom_hook(app, HookID_Layout,                  F4_Layout);
+  //       set_custom_hook(app, HookID_WholeScreenRenderCaller, F4_WholeScreenRender);
+  //       set_custom_hook(app, HookID_DeltaRule,               F4_DeltaRule);
+  //       set_custom_hook(app, HookID_BufferEditRange,         F4_BufferEditRange);
+  //       set_custom_hook_memory_size(app, HookID_DeltaRule, delta_ctx_size(sizeof(Vec2_f32)));
+  //   }
+  //
+  //   // NOTE(rjf): Set up mapping.
+  //   {
+  //       Thread_Context *tctx = get_thread_context(app);
+  //       mapping_init(tctx, &framework_mapping);
+  //       String_Const_u8 bindings_file = string_u8_litexpr("bindings.4coder");
+  //       F4_SetAbsolutelyNecessaryBindings(&framework_mapping);
+  //       if(!dynamic_binding_load_from_file(app, &framework_mapping, bindings_file))
+  //       {
+  //           F4_SetDefaultBindings(&framework_mapping);
+  //       }
+  //       F4_SetAbsolutelyNecessaryBindings(&framework_mapping);
+  //   }
+  //
+    // NOTE(rjf): Set up custom code index.
+    {
+        F4_Index_Initialize();
+    }
+
+    // NOTE(rjf): Register languages.
+    {
+        F4_RegisterLanguages();
+    }
+  }
+
   // custom_init_fonts(app);
 
   set_all_default_hooks(app);
@@ -377,10 +437,14 @@ custom_layer_init(Application_Links *app)
   set_custom_hook(app, HookID_RenderCaller, custom_render_caller);
   set_custom_hook(app, HookID_WholeScreenRenderCaller, vim_draw_whole_screen);
 
-  set_custom_hook(app, HookID_Tick, vim_tick);
+  // set_custom_hook(app, HookID_Tick, vim_tick);
+  set_custom_hook(app, HookID_Tick, custom_tick);
+
   set_custom_hook(app, HookID_SaveFile, vim_file_save_hook);
   set_custom_hook(app, HookID_BeginBuffer, vim_begin_buffer);
   set_custom_hook(app, HookID_ViewChangeBuffer, vim_view_change_buffer);
+
+
 
   Thread_Context *tctx = get_thread_context(app);
   mapping_init(tctx, &framework_mapping);
