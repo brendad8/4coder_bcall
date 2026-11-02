@@ -386,9 +386,9 @@ f4_custom_draw_whole_screen(Application_Links *app, View_ID view_id, Face_ID fac
     }
     
     // NOTE(rjf): Brace lines
-    {
-        F4_Brace_RenderLines(app, buffer, view_id, text_layout_id, cursor_pos);
-    }
+    // {
+    //     F4_Brace_RenderLines(app, buffer, view_id, text_layout_id, cursor_pos);
+    // }
     
     // NOTE(allen): put the actual text on the actual screen
     draw_text_layout_default(app, text_layout_id);
@@ -533,12 +533,12 @@ custom_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id, B
 
   // NOTE(rjf): Brace highlight
   {
-      Color_Array colors = finalize_color_array(fleury_color_brace_highlight);
-      if(colors.count >= 1 && F4_ARGBIsValid(colors.vals[0]))
-      {
-          F4_Brace_RenderHighlight(app, buffer, text_layout_id, cursor_pos,
-                                   colors.vals, colors.count);
-      }
+    Color_Array colors = finalize_color_array(fleury_color_brace_highlight);
+    if(colors.count >= 1 && F4_ARGBIsValid(colors.vals[0]))
+    {
+        F4_Brace_RenderHighlight(app, buffer, text_layout_id, cursor_pos,
+                                 colors.vals, colors.count);
+    }
   }
 
   b32 highlight_line_at_cursor = def_get_config_b32(vars_save_string_lit("highlight_line_at_cursor"));
@@ -578,7 +578,8 @@ custom_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id, B
   b32 use_paren_helper = def_get_config_b32(vars_save_string_lit("use_paren_helper"));
   if(use_paren_helper)
   {
-    Color_Array colors = finalize_color_array(defcolor_text_cycle);
+    // Color_Array colors = finalize_color_array(defcolor_text_cycle);
+    Color_Array colors = finalize_color_array(fleury_color_brace_highlight);
     draw_paren_highlight(app, buffer, text_layout_id, cursor_pos, colors.vals, colors.count);
   }
 

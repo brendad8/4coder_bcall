@@ -55,11 +55,11 @@ fleury_color_inactive_pane_overlay = 0x44000000;
 fleury_color_inactive_pane_background = 0xff000000;
 fleury_color_file_progress_bar     = 0x60634323;
 
-fleury_color_brace_highlight       = { defcolor_str_constant };
+fleury_color_brace_highlight       = { defcolor_preproc };
 fleury_color_brace_line            = { 0x809ba290 };
 fleury_color_brace_annotation      = { 0x809ba290 };
-fleury_color_index_product_type    = 0xFFedb211;
-fleury_color_index_sum_type        = 0xFFa7eb13;
+fleury_color_index_product_type    = 0xFF6688ff;
+fleury_color_index_sum_type        = 0xFF6688ff;
 fleury_color_index_function        = 0xFFB1A0F8;
 fleury_color_index_macro           = 0xFFB1A0F8;
 fleury_color_index_constant        = defcolor_int_constant;

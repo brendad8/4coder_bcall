@@ -170,7 +170,7 @@ function void setup_custom_bindings(Application_Links *app)
   // TODO(bcall): if indentint/outdenting in visual mode then stay in visual mode
   VimBind(N|V|MAP, vim_request_indent,                       KeyCode_Tab);
   VimBind(N|V|MAP, vim_request_outdent,                      KeyMod_Sft|KeyCode_Tab);
-
+  
   VimBind(N|MAP, vim_lowercase,               SUB_G,         KeyCode_U);
   VimBind(N|MAP, vim_uppercase,               SUB_G,         KeyMod_Sft|KeyCode_U);
   VimBind(V|MAP, vim_lowercase,                              KeyCode_U);

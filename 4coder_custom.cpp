@@ -29,8 +29,6 @@
 #include "generated/managed_id_metadata.cpp"
 #endif
 
-
-
 VIM_TEXT_OBJECT_SIG(EXAMPLE_object_camel){
   Range_i64 range = {};
   Scratch_Block scratch(app);
@@ -102,6 +100,34 @@ void
 custom_layer_init(Application_Links *app)
 {
   default_framework_init(app);
+
+  Scratch_Block scratch(app);
+  String_Const_u8 bin_path = system_get_path(scratch, SystemPath_Binary);
+
+  // NOTE(rjf): Small code font.
+  {
+      Face_ID face_that_should_totally_be_there = get_face_id(app, 0);
+
+      Face_Description normal_code_desc = get_face_description(app, get_face_id(app, 0));
+      
+      Face_Description desc = {0};
+      {
+          desc.font.file_name =  push_u8_stringf(scratch, "%.*sfonts/CascadiaMono-Regular.ttf", string_expand(bin_path));
+          desc.parameters.pt_size = normal_code_desc.parameters.pt_size - 1;
+          desc.parameters.bold = 1;
+          desc.parameters.italic = 1;
+          desc.parameters.hinting = 0;
+      }
+
+      if(IsFileReadable(desc.font.file_name))
+      {
+          global_small_code_face = try_create_new_face(app, &desc);
+      }
+      else
+      {
+          global_small_code_face = face_that_should_totally_be_there;
+      }
+  }
   
   // *********************************************************************
   //  4coder_fleury setup
@@ -112,6 +138,7 @@ custom_layer_init(Application_Links *app)
     F4_RegisterLanguages();
   }
 
+  // TODO(bcall): figure out how to make keywords bold
   // custom_init_fonts(app);
 
   set_all_default_hooks(app);
@@ -131,16 +158,6 @@ custom_layer_init(Application_Links *app)
   set_custom_hook(app, HookID_SaveFile, vim_file_save_hook);
   set_custom_hook(app, HookID_BeginBuffer, custom_begin_buffer);
   set_custom_hook(app, HookID_ViewChangeBuffer, vim_view_change_buffer);
-
-  // set_custom_hook(app, HookID_DeltaRule, F4_DeltaRule);
-  // set_custom_hook(app, HookID_BufferEditRange, F4_BufferEditRange);
-  // set_custom_hook(app, HookID_Tick, F4_Tick);
-  // set_custom_hook(app, HookID_RenderCaller, F4_Render);
-  // set_custom_hook(app, HookID_BeginBuffer, F4_BeginBuffer);
-  // set_custom_hook(app, HookID_Layout, F4_Layout);
-  // set_custom_hook(app, HookID_WholeScreenRenderCaller, F4_WholeScreenRender);
-  // set_custom_hook(app, HookID_DeltaRule, F4_DeltaRule);
-  // set_custom_hook(app, HookID_BufferEditRange, F4_BufferEditRange);
 
   Thread_Context *tctx = get_thread_context(app);
   mapping_init(tctx, &framework_mapping);
