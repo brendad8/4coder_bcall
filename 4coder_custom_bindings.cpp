@@ -160,6 +160,8 @@ function void setup_custom_bindings(Application_Links *app)
   VimBind(N|MAP, quick_swap_buffer,            SUB_RBracket, KeyCode_B);
 
   VimBind(N|MAP, f4_go_to_definition,                        KeyMod_Sft|KeyCode_K);
+  VimBind(N|MAP, f4_go_to_definition_same_panel,             KeyMod_Ctl|KeyCode_K);
+
   // VimBind(N|MAP, custom_jump_to_definition,                  KeyMod_Sft|KeyCode_K);
   // VimBind(N|MAP, qol_jump_to_definition,                     KeyMod_Sft|KeyCode_K);
   // VimBind(N|MAP, vim_goto_definition,                        KeyMod_Alt|KeyCode_K);
