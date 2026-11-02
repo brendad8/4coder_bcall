@@ -17,7 +17,7 @@
 #include "4coder_vim/4coder_vim_include.h"
 #include "4coder_vim/4coder_vim_include.cpp"
 
-#include "4coder_fleury/4coder_fleury_include.cpp"
+#include "4coder_fleury_include.cpp"
 
 #include "4coder_custom_bindings.cpp"
 #include "4coder_custom_commands.cpp"
