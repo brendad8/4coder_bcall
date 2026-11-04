@@ -381,9 +381,9 @@ f4_custom_draw_whole_screen(Application_Links *app, View_ID view_id, Face_ID fac
     }
     
     // NOTE(rjf): Brace annotations
-    {
-        F4_Brace_RenderCloseBraceAnnotation(app, buffer, text_layout_id, cursor_pos);
-    }
+    // {
+    //     F4_Brace_RenderCloseBraceAnnotation(app, buffer, text_layout_id, cursor_pos);
+    // }
     
     // NOTE(rjf): Brace lines
     // {
@@ -613,9 +613,9 @@ custom_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id, B
   }
 
   // NOTE(rjf): Brace annotations
-  {
-      F4_Brace_RenderCloseBraceAnnotation(app, buffer, text_layout_id, cursor_pos);
-  }
+  // {
+  //     F4_Brace_RenderCloseBraceAnnotation(app, buffer, text_layout_id, cursor_pos);
+  // }
 
   paint_fade_ranges(app, text_layout_id, buffer);
   draw_text_layout_default(app, text_layout_id);
