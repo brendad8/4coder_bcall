@@ -101,6 +101,9 @@ custom_layer_init(Application_Links *app)
 {
   default_framework_init(app);
 
+  global_frame_arena = make_arena(get_base_allocator_system());
+  permanent_arena = make_arena(get_base_allocator_system());
+
   Scratch_Block scratch(app);
   String_Const_u8 bin_path = system_get_path(scratch, SystemPath_Binary);
 
